@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SingularityCode | Event Horizon</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #00f3ff;
+            --secondary: #bc13fe;
+            --warning: #ff2a2a;
+            --bg: #020202;
+            --void: #000000;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg);
+            overflow: hidden;
+            font-family: 'Share Tech Mono', monospace;
+            color: white;
+            cursor: none; /* Oculta el cursor del mouse para más inmersión */
+        }
+
+        /* --- CAPA 1: FONDO (CANVAS) --- */
+        #starfield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* --- CAPA 2: TEXTURA VINTAGE/RUIDO --- */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+            background: 
+                radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%),
+                linear-gradient(to bottom, rgba(255,255,255,0.02) 50%, rgba(0,0,0,0.02) 50%);
+            background-size: 100% 100%, 100% 3px;
+            pointer-events: none;
+        }
+
+        /* --- CAPA 3: LA SINGULARIDAD --- */
+        .singularity-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .black-hole {
+            width: 200px;
+            height: 200px;
+            background: var(--void);
+            border-radius: 50%;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 60px 20px rgba(0,0,0,1);
+        }
+
+        .accretion-disk {
+            position: absolute;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg, 
+                transparent 0%, 
+                var(--secondary) 25%, 
+                var(--primary) 50%, 
+                white 55%, 
+                var(--primary) 60%, 
+                var(--secondary) 85%, 
+                transparent 100%
+            );
+            animation: spin 6s linear infinite;
+            filter: blur(8px);
+            z-index: 1;
+            opacity: 0.9;
+            transform: rotateX(75deg);
+        }
+
+        @keyframes spin {
+            from { transform: rotateX(75deg) rotate(0deg); }
+            to { transform: rotateX(75deg) rotate(360deg); }
+        }
+
+        /* --- CAPA 4: TEXTOS --- */
+        .ui-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .brand-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 6vw; /* Responsivo */
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5em;
+            color: #fff;
+            margin: 0;
+            mix-blend-mode: hard-light;
+            position: relative;
+        }
+
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--warning);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--secondary);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 80px, 0); transform: skew(0.5deg); }
+            20% { clip: rect(80px, 9999px, 10px, 0); transform: skew(-0.5deg); }
+            100% { clip: rect(40px, 9999px, 50px, 0); transform: skew(0); }
+        }
+
+        /* Mensaje de Máquina de Escribir */
+        .terminal-msg {
+            margin-top: 3rem;
+            font-size: 1.2rem;
+            color: var(--primary);
+            min-height: 1.5em;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px var(--primary);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            background-color: var(--primary);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* Footer técnico */
+        .footer-info {
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield"></canvas>
+    <div class="overlay"></div>
+
+    <div class="singularity-container">
+        <div class="accretion-disk"></div>
+        <div class="black-hole"></div>
+    </div>
+
+    <div class="ui-layer">
+        <h1 class="brand-name glitch" data-text="SingularityCode">SingularityCode</h1>
+        
+        <div class="terminal-msg">
+            <span id="typewriter"></span><span class="cursor">&nbsp;</span>
+        </div>
+    </div>
+
+    <div class="footer-info">
+        > SYSTEM_READY <span style="margin: 0 10px">|</span> EST_2026 <span style="margin: 0 10px">|</span> SUCESOS_INEVITABLES
+    </div>
+
+    <script>
+        /* --- FONDO DE ESTRELLAS 3D (WARP SPEED LENTO) --- */
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        const stars = [];
+        const numStars = 600;
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Star {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * width - width / 2;
+                this.y = Math.random() * height - height / 2;
+                this.z = Math.random() * 1000 + 500;
+                this.pz = this.z; // Posición previa para estelas (opcional)
+            }
+            update() {
+                this.z -= 0.5; // Velocidad muy lenta y ominosa
+                if (this.z < 1) this.reset();
+            }
+            draw() {
+                const x = (this.x / this.z) * width + width / 2;
+                const y = (this.y / this.z) * height + height / 2;
+                const size = (1000 - this.z) / 1000 * 2;
+                const opacity = (1000 - this.z) / 1000;
+
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < numStars; i++) stars.push(new Star());
+
+        function animate() {
+            ctx.fillStyle = 'rgba(2, 2, 2, 0.3)'; // Trail effect sutil
+            ctx.fillRect(0, 0, width, height);
+            stars.forEach(s => { s.update(); s.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        /* --- MÁQUINA DE ESCRIBIR (LOOP INFINITO) --- */
+        const messages = [
+            "EL CODIGO ESTA EVOLUCIONANDO...",
+            "ESPERANOS PRONTO.",
+            "LA SINGULARIDAD ES INEVITABLE.",
+            "REDEFINIENDO EL SOFTWARE..."
+        ];
+        
+        const typeContainer = document.getElementById('typewriter');
+        let msgIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let typeSpeed = 100;
+
+        function type() {
+            const currentMsg = messages[msgIndex];
+            
+            if (isDeleting) {
+                typeContainer.textContent = currentMsg.substring(0, charIndex - 1);
+                charIndex--;
+                typeSpeed = 50; // Borrar rápido
+            } else {
+                typeContainer.textContent = currentMsg.substring(0, charIndex + 1);
+                charIndex++;
+                typeSpeed = 100; // Escribir normal
+            }
+
+            if (!isDeleting && charIndex === currentMsg.length) {
+                isDeleting = true;
+                typeSpeed = 2000; // Pausa al terminar frase
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                msgIndex = (msgIndex + 1) % messages.length;
+                typeSpeed = 500; // Pausa antes de nueva frase
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+
+        // Iniciar máquina de escribir después de 1 segundo
+        setTimeout(type, 1000);
+
+    </script>
+</body>
+</html>
